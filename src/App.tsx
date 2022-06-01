@@ -1,71 +1,34 @@
 import './App.scss';
+import {
+  PreparedOrder, Order, User, Product,
+} from './app.typedefs';
 
-// import users from './api/users.json';
-// import products from './api/products.json';
-// import orders from './api/orders.json';
+import usersFromServer from './api/users.json';
+import productsFromServer from './api/products.json';
+import ordersFromServer from './api/orders.json';
+import { OrdersList } from './components';
+
+function prepareOrders(
+  orders: Order[],
+  users: User[],
+  products: Product[],
+): PreparedOrder[] {
+  return orders.map(order => ({
+    ...order,
+    user: users.find(user => order.userId === user.id),
+    products: products.filter(product => product.orderId === order.id),
+  }));
+}
+
+const preparedOrders: PreparedOrder[] = prepareOrders(
+  ordersFromServer, usersFromServer, productsFromServer,
+);
 
 function App() {
   return (
-    <div className="container">
-      <div className="ui card">
-        <div className="ui content">
-          <div className="ui description">
-            <p>Sunday - (Roma)</p>
-            <ul className="ui list">
-              <li>Banana</li>
-              <li>Beer</li>
-              <li>Cake</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <div className="ui card">
-        <div className="ui content">
-          <div className="ui description">
-            <p>My day - (Anna)</p>
-            <b>No tasks</b>
-          </div>
-        </div>
-      </div>
-
-      <div className="ui card">
-        <div className="ui content">
-          <div className="ui description">
-            <p>Work - (Roma)</p>
-            <ul className="ui list">
-              <li>Sugar</li>
-              <li>Coffee</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <div className="ui card">
-        <div className="ui content">
-          <div className="ui description">
-            <p>Monday - (Anna)</p>
-            <ul className="ui list">
-              <li>Milk</li>
-              <li>Bread</li>
-              <li>Eggs</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <div className="ui card">
-        <div className="ui content">
-          <div className="ui description">
-            <p>Everyday - (Max)</p>
-            <ul className="ui list">
-              <li>Cheese</li>
-              <li>Sugar</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
+    <>
+      <OrdersList orders={preparedOrders} />
+    </>
   );
 }
 
